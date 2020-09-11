@@ -1,1 +1,1 @@
-# gumroad-license-validator
+# GoogleSheets Helper
