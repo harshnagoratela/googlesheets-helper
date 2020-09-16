@@ -93,7 +93,7 @@ router.post('/addcomment', async (req, res) => {
   res.setHeader('Access-Control-Allow-Methods', 'POST')
   
   //console.log("*** request.body.privateKey ",req.body.privateKey);
-  const result = await addCommentsToGS(req.body.sheetId,req.body.clientEmail,req.body.privateKey,req.body.newRequest);
+  const result = await addCommentsToGS(req.body.sheetId,req.body.clientEmail,req.body.privateKey,req.body.newData);
   //const result = true;
   res.json({
     result
