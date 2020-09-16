@@ -34,7 +34,7 @@ const addCommentsToGS = async (sheetId, client_email, private_key, newData ) => 
 	  //console.log("++++++ jsonData ",jsonData)
 	
 	  await sheet.addRow({
-		"Comment": encodeURIComponent(jsonData.Comment),
+		"Comment": jsonData.Comment,
 		"ContentItem": encodeURIComponent(jsonData.ContentItem),
 		"PostedBy": jsonData.PostedBy,
 		"PostedOn": jsonData.PostedOn
