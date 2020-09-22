@@ -46,6 +46,38 @@ const addCommentsToGS = async (sheetId, client_email, private_key, newData ) => 
   }
 }
 
+const addItemToGS = async (sheetId, client_email, private_key, newData ) => {
+  
+  try {	  
+	    
+	  private_key = private_key.split("\\n").join("\n")
+	  const doc = new GoogleSpreadsheet(sheetId);
+	  // use service account creds
+	  await doc.useServiceAccountAuth({
+		client_email,
+		private_key
+	  });
+	  await doc.loadInfo(); // loads document properties and worksheets
+
+	  const sheet = doc.sheetsByTitle["Data"];  
+	  
+	  const jsonData = JSON.parse(newData);
+	  
+	  //if image is present it will in "Image: [ { url: '' } ]" format in JSON. Convert it into comma seperated values of image URLs
+	  if(jsonData["Image"]){
+		  jsonData["Image"] = jsonData["Image"][0].url;
+	  }
+	  
+	  //console.log(jsonData);
+	  //console.log(jsonData["Image"]);
+	  await sheet.addRow(jsonData);
+	  return true;
+  } catch (error) {
+	  //console.log(error);
+	return error;
+  }
+}
+
 const registerUserToGS = async (sheetId, client_email, private_key, newRequest ) => {
   
   try {	  
@@ -94,6 +126,24 @@ router.post('/addcomment', async (req, res) => {
   
   //console.log("*** request.body.privateKey ",req.body.privateKey);
   const result = await addCommentsToGS(req.body.sheetId,req.body.clientEmail,req.body.privateKey,req.body.newData);
+  //const result = true;
+  res.json({
+    result
+  })
+});
+
+router.get('/additem', (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/html' });
+  res.write('<h1>This serverless function will add an item to googlesheets!</h1>');
+  res.end();
+});
+router.post('/additem', async (req, res) => {
+  //cors related changes
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST')
+  
+  //console.log("*** request.body.privateKey ",req.body.privateKey);
+  const result = await addItemToGS(req.body.sheetId,req.body.clientEmail,req.body.privateKey,req.body.newData);
   //const result = true;
   res.json({
     result
